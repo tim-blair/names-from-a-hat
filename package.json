@@ -1,0 +1,14 @@
+{
+  "name": "gift-randomizer",
+  "version": "1.0.0",
+  "description": "Randomly assigns who should give each other gifts, ensuring couples don't give to each other, and everyone gets something!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tim Blair",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "0.0.2"
+  }
+}
