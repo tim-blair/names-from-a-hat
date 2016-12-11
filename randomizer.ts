@@ -22,15 +22,10 @@ rl.on('line', line => {
 rl.on('close', () => {
   let givers = shuffle(pairs);
   givers.forEach((pair, index) => {
-    let receivers = [];
-    if(index === 0) {
-      receivers[0] = givers[givers.length - 1][0];
-    } else if(index === givers.length - 1) {
-      receivers[1] = givers[0][1];
-    }
-    receivers[0] = receivers[0] || givers[index - 1][0];
-    receivers[1] = receivers[1] || givers[index + 1][1];
-
+    let receivers = [
+      givers[(index - 1 + givers.length) % givers.length][0],
+      givers[(index + 1) % givers.length][1]
+    ];
     fs.writeFile(`./${pair[0]}.txt`, receivers[0]);
     fs.writeFile(`./${pair[1]}.txt`, receivers[1]);
   });
