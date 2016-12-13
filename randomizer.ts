@@ -1,32 +1,73 @@
-let readline = require('readline'),
-    fs = require('fs'),
-    shuffle = require('shuffle-array');
+import shuffle = require('shuffle-array');
+import bodyParser = require('body-parser');
+import express = require('express');
 
-let rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
+let app = express();
+
+app.use(bodyParser.json());
+
+app.get('/', (req, res) => {
+  // todo: make static page
+  res.send(`<html><head></head><body>
+           <script>
+           http = new XMLHttpRequest();
+           http.open('POST', '/pairs', true);
+           pairs = [['tim', 'megan'], ['scott', 'hollly'], ['don', 'jenn']];
+           pjson = JSON.stringify(pairs);
+           http.setRequestHeader('Content-type', 'application/json');
+           http.setRequestHeader('Content-length', pjson.length);
+           http.setRequestHeader('Connection', 'close');
+           http.onreadystatechange = () => {
+             if(http.readyState == 4 && http.status == 200) {
+               alert(http.responseText);
+             }
+           }
+           http.send(pjson);
+           </script>
+           </body></html>`);
 });
 
-let pairs = [];
-
-rl.on('line', line => {
-  let names = line.split(',');
-  if(names.length !== 2) {
-    console.log(`Expected 2 names, got ${names.length}`);
-    return;
-  }
-  let trimmed = names.map((s) => s.trim())
-  pairs.push(shuffle(trimmed));
+app.post('/singles', (req, res) => {
+  console.log('singles');
+  res.send('result goes here');
 });
 
-rl.on('close', () => {
-  let givers = shuffle(pairs);
+app.post('/pairs', (req, res) => {
+  console.log('pairs');
+  // req.body should be an array of array-2s
+  // TODO: enforce with TS
+  let pairs = req.body,
+    names= [];
+
+  pairs.forEach((pair, index) => {
+    if(pair.length !== 2) {
+      console.log(`Expected 2 names, got ${pair.length}`);
+      return; // TODO: throw/error resp?
+    }
+    names.push(shuffle(pair.map((s) => s.trim())));
+  });
+
+  let givers = shuffle(names),
+    result = {};
   givers.forEach((pair, index) => {
     let receivers = [
-      givers[(index - 1 + givers.length) % givers.length][0],
-      givers[(index + 1) % givers.length][1]
+      givers[wrap(index - 1, givers.length)][0],
+      givers[wrap(index + 1, givers.length)][1]
     ];
-    fs.writeFile(`./${pair[0]}.txt`, receivers[0]);
-    fs.writeFile(`./${pair[1]}.txt`, receivers[1]);
+    result[pair[0]] = receivers[0];
+    result[pair[1]] = receivers[1];
   });
+
+  res.json(result);
+});
+
+let wrap = (x, max) => {
+  if(x < 0) {
+    return x + max;
+  }
+  return x % max;
+}
+
+let server = app.listen(8081, () => {
+  console.log(`Listening on ${server.address().address}:${server.address().port}`);
 });

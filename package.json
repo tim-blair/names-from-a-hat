@@ -1,5 +1,5 @@
 {
-  "name": "gift-randomizer",
+  "name": "names-from-a-hat",
   "version": "1.0.0",
   "description": "Randomly assigns who should give each other gifts, ensuring couples don't give to each other, and everyone gets something!",
   "main": "index.js",
@@ -10,5 +10,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "0.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "number-wrap": "^1.0.0",
+    "shuffle-array": "^1.0.0"
   }
 }
