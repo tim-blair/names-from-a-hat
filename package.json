@@ -4,20 +4,22 @@
   "description": "Randomly assigns who should give each other gifts, ensuring couples/groups don't give to each other, and everyone gets something!",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "author": "Tim Blair",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "0.0.2"
+    "babel-plugin-transform-flow-strip-types": "^6.21.0",
+    "flow-bin": "^0.37.4",
+    "jest": "^18.0.0",
+    "ramda": "^0.22.1"
   },
   "dependencies": {
-    "@types/body-parser": "0.0.33",
-    "@types/express": "^4.0.34",
-    "@types/shuffle-array": "0.0.28",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "number-wrap": "^1.0.0",
+    "ramda": "^0.22.1",
     "shuffle-array": "^1.0.0"
   }
 }
