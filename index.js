@@ -8,27 +8,7 @@ let app = express();
 
 app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
-  // todo: make static page
-  res.send(`<html><head></head><body>
-           <script>
-           http = new XMLHttpRequest();
-           http.open('POST', '/group', true);
-           pairs = [['tim', 'megan'], ['scott', 'holly'], ['don', 'jenn'], ['sadman'], ['big', 'family', 'of', 'four']];
-           pjson = JSON.stringify(pairs);
-           http.setRequestHeader('Content-type', 'application/json');
-           http.setRequestHeader('Content-length', pjson.length);
-           http.setRequestHeader('Connection', 'close');
-           http.onreadystatechange = () => {
-             if(http.readyState == 4 && http.status == 200) {
-               var r = JSON.parse(http.responseText);
-               for(var k in r) { document.writeln('<div>' + k + ' ' + r[k] + '</div>'); }
-             }
-           }
-           http.send(pjson);
-           </script>
-           </body></html>`);
-});
+app.use(express.static('public'));
 
 app.post('/single', (req, res) => {
   console.log('singles');
