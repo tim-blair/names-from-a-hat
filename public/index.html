@@ -6,14 +6,54 @@
 
   <body>
     <header>
-      <div style="background-color:#45A4DF;">Names From a Hat</div>
+      <div style='background-color:#45A4DF;'>Names From a Hat</div>
     </header>
-    <form>
-      <button type="button">Singles</button>
-      <button type="button">Groups</button>
+    <form id='button-form'>
+      <button type='button' onclick='showNames(false)'>Singles</button>
+      <button type='button' onclick='showNames(true)'>Groups</button>
     </form>
+
+    <div id='names' style='display: none'>
+      <span id='name-container'>
+        <input type='text' placeholder='Name' onkeypress='textHandle(event)'/>
+      </span>
+      <button id='next-button' type='button' style='display: none' onclick='nextClick()'>Next</button>
+      <button type='button' onclick='doneClick()'>Done</button>
+    </div>
     <footer>
-      <div style="background-color:#DDDDDD">Proudly built with <img src="vanilla.png" onclick="location.href = 'http://vanilla-js.com/'"/></div>
+      <div style='background-color:#DDDDDD'>Proudly built with <img src='vanilla.png' onclick='location.href = "http://vanilla-js.com/"'/></div>
     </footer>
+    <!-- TODO: Add async and defer once I move this to its own file -->
+    <script type='text/javascript'>
+      let showNames = (showNext) => {
+        document.getElementById('button-form').style.display = 'none';
+        document.getElementById('names').style.display = 'block';
+        if(showNext) {
+          document.getElementById('next-button').style.display = 'block';
+        }
+      };
+      let addNameBox = () => {
+        let box = document.createElement('input'),
+          container = document.getElementById('name-container');
+          box.type = 'text';
+          box.placeholder = 'name';
+          box.onkeypress = textHandle;
+
+          container.appendChild(box);
+          box.focus();
+      };
+      let textHandle = (event) => {
+        if(event.keyCode === 13){
+            event.preventDefault();
+            addNameBox();
+        }
+      };
+      let nextClick = () => {
+        alert('next');
+      };
+      let doneClick = () => {
+        alert('done');
+      }
+    </script>
   </body>
 </html>

@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "start": "babel-node index.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "author": "Tim Blair",
@@ -18,7 +19,6 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
-    "number-wrap": "^1.0.0",
     "ramda": "^0.22.1",
     "shuffle-array": "^1.0.0"
   }
