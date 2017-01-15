@@ -25,7 +25,8 @@
     </footer>
     <!-- TODO: Add async and defer once I move this to its own file -->
     <script type='text/javascript'>
-      let isSingles = true;
+      let isSingles = true,
+        groups = [];
       let showNames = (singles) => {
         document.getElementById('button-form').style.display = 'none';
         document.getElementById('names').style.display = 'block';
@@ -50,15 +51,25 @@
             addNameBox();
         }
       };
+      let getAllEntries = () => {
+        let items = document.getElementsByTagName('input'), // todo: refine?
+            values = [];
+          for(let item of items) { 
+            values.push(item.value);
+          }
+          return values;
+      };
       let nextClick = () => {
-        alert('next');
+          groups.push(getAllEntries());
+          document.getElementById('name-container').innerHTML = '';
+          addNameBox();
       };
       let ajax = (url, data, onSuccess, onFailure) => {
         http = new XMLHttpRequest();
         http.open('POST', url, true);
-        pjson = JSON.stringify(data);
+        json = JSON.stringify(data);
         http.setRequestHeader('Content-type', 'application/json');
-        http.setRequestHeader('Content-length', pjson.length);
+        http.setRequestHeader('Content-length', json.length);
         http.setRequestHeader('Connection', 'close');
         http.onreadystatechange = () => {
           if(http.readyState == 4) {
@@ -70,24 +81,22 @@
             }
           }
         }
-        http.send(pjson);
+        http.send(json);
       }
       let doneClick = () => {
         if(isSingles) {
-          let items = document.getElementsByTagName('input'), // todo: refine?
-            values = [];
-          for(let item of items) { 
-            console.log(item.value);
-            values.push(item.value);
-          }
-          ajax('/single', values, (response) => {
+          ajax('/single', getAllEntries(), (response) => {
               let parsed = JSON.parse(response);
               // todo: do something
               for(var k in parsed) { document.writeln('<div>' + k + ' ' + parsed[k] + '</div>'); }
           });
-          http.send(pjson);
         } else {
-          alert('groups');
+          groups.push(getAllEntries());
+          ajax('/group', groups, (response) => {
+              let parsed = JSON.parse(response);
+              // todo: do something
+              for(var k in parsed) { document.writeln('<div>' + k + ' ' + parsed[k] + '</div>'); }
+          });
         }
       }
     </script>
