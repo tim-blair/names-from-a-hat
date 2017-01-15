@@ -9,8 +9,8 @@
       <div style='background-color:#45A4DF;'>Names From a Hat</div>
     </header>
     <form id='button-form'>
-      <button type='button' onclick='showNames(false)'>Singles</button>
-      <button type='button' onclick='showNames(true)'>Groups</button>
+      <button type='button' onclick='showNames(true)'>Singles</button>
+      <button type='button' onclick='showNames(false)'>Groups</button>
     </form>
 
     <div id='names' style='display: none'>
@@ -25,10 +25,12 @@
     </footer>
     <!-- TODO: Add async and defer once I move this to its own file -->
     <script type='text/javascript'>
-      let showNames = (showNext) => {
+      let isSingles = true;
+      let showNames = (singles) => {
         document.getElementById('button-form').style.display = 'none';
         document.getElementById('names').style.display = 'block';
-        if(showNext) {
+        isSingles = singles;
+        if(!singles) {
           document.getElementById('next-button').style.display = 'block';
         }
       };
@@ -51,8 +53,42 @@
       let nextClick = () => {
         alert('next');
       };
+      let ajax = (url, data, onSuccess, onFailure) => {
+        http = new XMLHttpRequest();
+        http.open('POST', url, true);
+        pjson = JSON.stringify(data);
+        http.setRequestHeader('Content-type', 'application/json');
+        http.setRequestHeader('Content-length', pjson.length);
+        http.setRequestHeader('Connection', 'close');
+        http.onreadystatechange = () => {
+          if(http.readyState == 4) {
+            if(http.status == 200) {
+              onSuccess && onSuccess(http.responseText);
+            } else {
+              // todo: what to send back?
+              onFailure && onFailure();
+            }
+          }
+        }
+        http.send(pjson);
+      }
       let doneClick = () => {
-        alert('done');
+        if(isSingles) {
+          let items = document.getElementsByTagName('input'), // todo: refine?
+            values = [];
+          for(let item of items) { 
+            console.log(item.value);
+            values.push(item.value);
+          }
+          ajax('/single', values, (response) => {
+              let parsed = JSON.parse(response);
+              // todo: do something
+              for(var k in parsed) { document.writeln('<div>' + k + ' ' + parsed[k] + '</div>'); }
+          });
+          http.send(pjson);
+        } else {
+          alert('groups');
+        }
       }
     </script>
   </body>
