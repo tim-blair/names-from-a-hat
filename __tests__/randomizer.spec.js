@@ -50,3 +50,33 @@ test('No one should ever draw themselves', () => {
       expect(key).not.toBe(result.get(key))
     }
 });
+
+test('Single: Empty names should be skipped', () => {
+    const randomizer = require('../randomizer');
+    const R = require('ramda');
+    const names = ['a', 'b', ''];
+    const result = randomizer.single(names);
+    expect(result.size).toBe(2);
+});
+
+test('Group: Empty names should be skipped', () => {
+    const randomizer = require('../randomizer');
+    const R = require('ramda');
+    const groups = [
+      ['a', 'b', ''],
+      ['', '1', '2']
+    ];
+    const result = randomizer.group(groups);
+    expect(result.size).toBe(4);
+});
+test('Empty groups should be skipped', () => {
+    const randomizer = require('../randomizer');
+    const R = require('ramda');
+    const groups = [
+      ['a', 'b', ''],
+      ['', '1', '2'],
+      [], []
+    ];
+    const result = randomizer.group(groups);
+    expect(result.size).toBe(4);
+});

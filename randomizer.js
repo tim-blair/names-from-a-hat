@@ -4,7 +4,9 @@ const shuffle = require('shuffle-array');
 const R = require('ramda');
 
 const trimAndShuffle = (names: string[]): string[] => {
-  return shuffle(names.map(n => n.trim()));
+  return shuffle(
+    R.filter(n => n.length > 0, names.map(n => n.trim()))
+  );
 };
 
 const single = (names: string[]): Map<string, string> => {
@@ -46,7 +48,9 @@ const mapGroups = (groups: string[][]): Map<string, string> | null => {
 };
 
 const group = (groups: string[][]): Map<string, string> => {
-  const people = shuffle(groups.map(trimAndShuffle)),
+  const people = shuffle(
+      R.filter(g => g.length > 0, groups.map(trimAndShuffle))
+    ),
     result = mapGroups(people);
 
   if(result === null) {
