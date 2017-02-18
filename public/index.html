@@ -2,11 +2,27 @@
 <html>
   <head>
     <title>Names from a hat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+      button {
+        margin: 1rem
+      }
+      .arrow {
+        color: #45A4DF
+      }
+      input {
+        display: block;
+        margin: 1rem
+      }
+    </style>
   </head>
 
   <body>
     <header>
-      <div style='background-color:#45A4DF;'>Names From a Hat</div>
+      <div style='background-color:#45A4DF;padding:1rem'>Names From a Hat</div>
     </header>
     <form id='button-form'>
       <button type='button' onclick='showNames(true)'>Singles</button>
@@ -21,19 +37,20 @@
       <button id='next-button' type='button' style='display: none' onclick='nextClick()'>Next</button>
       <button type='button' onclick='doneClick()'>Done</button>
     </div>
+    <div id='result' style='display: none; padding:1rem'>
+    </div>
     <footer>
-      <div style='background-color:#DDDDDD'>Proudly built with <img src='vanilla.png' onclick='location.href = "http://vanilla-js.com/"'/></div>
+      <div style='background-color:#DDDDDD;padding:1rem;line-height: 1.5rem'>Proudly built with <img src='vanilla.png' onclick='location.href = "http://vanilla-js.com/"'/></div>
     </footer>
-    <!-- TODO: Add async and defer once I move this to its own file -->
     <script type='text/javascript'>
       let isSingles = true,
         groups = [];
       let showNames = (singles) => {
         document.getElementById('button-form').style.display = 'none';
-        document.getElementById('names').style.display = 'block';
+        document.getElementById('names').style.display = 'inline';
         isSingles = singles;
         if(!singles) {
-          document.getElementById('next-button').style.display = 'block';
+          document.getElementById('next-button').style.display = 'inline';
         }
       };
       let addNameBox = () => {
@@ -53,7 +70,7 @@
         }
       };
       let getAllEntries = () => {
-        let items = document.getElementsByTagName('input'), // todo: refine?
+        let items = document.getElementsByTagName('input'),
             values = [];
           for(let item of items) { 
             values.push(item.value);
@@ -70,8 +87,6 @@
         http.open('POST', url, true);
         json = JSON.stringify(data);
         http.setRequestHeader('Content-type', 'application/json');
-        http.setRequestHeader('Content-length', json.length);
-        http.setRequestHeader('Connection', 'close');
         http.onreadystatechange = () => {
           if(http.readyState == 4) {
             if(http.status == 200) {
@@ -83,20 +98,28 @@
           }
         }
         http.send(json);
-      }
+      };
+      let showResults = (result) => {
+        let resultContainer = document.getElementById('result');
+        document.getElementById('names').style.display = 'none';
+        resultContainer.style.display = 'block';
+        for(var key in result) {
+          let item = document.createElement('div');
+          item.innerHTML = result[key][0] +  '<span class="arrow"> &#x27a9; </span>' + result[key][1]
+          resultContainer.appendChild(item);
+        }
+      };
       let doneClick = () => {
         if(isSingles) {
           ajax('/single', getAllEntries(), (response) => {
               let parsed = JSON.parse(response);
-              // todo: do something
-              for(var k in parsed) { document.writeln('<div>' + k + ' ' + parsed[k] + '</div>'); }
+              showResults(parsed);
           });
         } else {
           groups.push(getAllEntries());
           ajax('/group', groups, (response) => {
               let parsed = JSON.parse(response);
-              // todo: do something
-              for(var k in parsed) { document.writeln('<div>' + k + ' ' + parsed[k] + '</div>'); }
+              showResults(parsed);
           });
         }
       }
